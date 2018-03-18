@@ -2,6 +2,8 @@
 #include <GL/freeglut.h>
 #include <iostream>
 
+const std::string WINDOW_TITLE = "BASIC TEMPLATE";
+
 // Function for resizing window. Put in "glutReshapeFunc"
 void changeViewPort(int w, int h) {
 	glViewport(0, 0, w, h);
@@ -24,7 +26,7 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(800, 600);
 
 	// Create the window with the title "Hello Fariz"
-	glutCreateWindow("Grafika");
+	glutCreateWindow(WINDOW_TITLE.data());
 
 	// Bind the two functions (above) to respond when necessary
 	glutReshapeFunc(changeViewPort);
