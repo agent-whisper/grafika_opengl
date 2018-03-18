@@ -4,8 +4,15 @@
 
 const std::string WINDOW_TITLE = "BASIC TEMPLATE";
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+GLuint shaderProgramID;
+GLuint vao = 0;
+GLuint vbo;
+GLuint positionID, colorID;
+
 // =========================================================================================
 
+#pragma region SHADER_FUNCTIONS
 // Utitility Functions
 static char* readFile(const char* filename) {
 	FILE* fp;
@@ -56,6 +63,7 @@ GLuint makeShaderProgram(GLuint vertexShaderID, GLuint fragmentShaderID) {
 	glLinkProgram(shaderID);
 	return shaderID;
 } // function to generate shader program id
+#pragma endregion SHADER_FUNCTIONS
 
 // Window Functions
 void changeViewPort(int w, int h) {
@@ -64,6 +72,7 @@ void changeViewPort(int w, int h) {
 
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 	glutSwapBuffers();
 }
 
@@ -88,20 +97,65 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	// === VERTICES AND COLOR CONFIGURATIONS ===
+	GLfloat vertices[] = { -0.5f, -0.5f, 0.0f,
+							0.0f, -0.5f, 0.0f,
+							-0.25f, 0.0f, 0.0f };
+	GLfloat colors[] = { 1.0f, 0.0f, 0.0f, 1.0f,
+						 0.0f, 1.0f, 0.0f, 1.0f,
+						 0.0f, 0.0f, 1.0f, 1.0f };
+
+	GLfloat triangle2_vertex [] = {  0.0f, -0.5f, 0.0f,
+								 	 0.5f, -0.5f, 0.0f,
+									0.25f, 0.0f, 0.0f };
+
+	GLfloat triangle2_colors[] = { 0.0f, 1.0f, 0.0f, 1.0f,
+								   0.0f, 1.0f, 0.0f, 1.0f,
+								   0.0f, 1.0f, 0.0f, 1.0f };
+
 	// === SHADER INITIALIZATION ===
-	/*
-
-	The standard code structure is as follow:
-
-	char *vertexShaderSourceCode = readFile("vertex.vsh"); // Loads the vertex shader source file
-	char *fragmentShaderSourceCode = readFile("fragment.vsh"); // Loads the fragment shader source file
+	char *vertexShaderSourceCode = readFile("vertexShader.vsh"); // Loads the vertex shader source file
+	char *fragmentShaderSourceCode = readFile("fragmentShader.fsh"); // Loads the fragment shader source file
 	GLuint vertShaderID = makeVertexShader(vertexShaderSourceCode); // Generate the vertex shader ID
 	GLuint fragShaderID = makeFragmentShader(fragmentShaderSourceCode); // Generate the fragment shader ID
-	GLuint shaderProgramID = makeShaderProgram(vertShaderID, fragShaderID); // Generate the shader program ID
-	glUseProgram(shaderProgramID); // Use the shader program in the main program
-	glDeleteProgram(shaderProgramID); // Free the shader program resources
+	shaderProgramID = makeShaderProgram(vertShaderID, fragShaderID); // Generate the shader program ID
+	
+	printf("vertexShaderID is %d\n", vertShaderID);
+	printf("fragShaderID is %d\n", fragShaderID);
+	printf("shaderProgramID is %d\n", shaderProgramID);
+	printf("s_vPosition is %d\n", positionID);
 
-	*/
+
+	// === BUFFERS ===
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	// Create the buffer, but don't load anything yet
+	glBufferData(GL_ARRAY_BUFFER, (7 * 3) * 2 * sizeof(GLfloat), NULL, GL_STATIC_DRAW); // 7 => one set of vertices (3 vertex + 4 color); 3 => number of vertices; Both forms a triangle
+
+	// Load the vertex points
+	glBufferSubData(GL_ARRAY_BUFFER, 0, 3 * 3 * sizeof(GLfloat), vertices); // (type, starting address, length, the array)
+	// Load the colors
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * 3 * sizeof(GLfloat), 3 * 4 * sizeof(GLfloat), colors); // (type, starting address, length, the array)
+
+	// Load the vertex points
+	glBufferSubData(GL_ARRAY_BUFFER, 7 * 3 * sizeof(GLfloat), 3 * 3 * sizeof(GLfloat), triangle2_vertex);
+	// Load the colors
+	glBufferSubData(GL_ARRAY_BUFFER, (7 * 3 + 3 * 3) * sizeof(GLfloat), 3 * 4 * sizeof(GLfloat), triangle2_colors);
+
+	// Find the position of the variables in the shader
+	positionID = glGetAttribLocation(shaderProgramID, "s_vPosition");
+	colorID = glGetAttribLocation(shaderProgramID, "s_vColor");
+
+	glVertexAttribPointer(positionID, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(3 * 3 * sizeof(GLfloat)));
+	glUseProgram(shaderProgramID);
+	glEnableVertexAttribArray(positionID);
+	glEnableVertexAttribArray(colorID);
+
 	// === MAIN LOOP START ===
 	glutMainLoop();
 	return 0;
