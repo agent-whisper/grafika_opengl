@@ -99,19 +99,11 @@ int main(int argc, char** argv) {
 
 	// === VERTICES AND COLOR CONFIGURATIONS ===
 	GLfloat vertices[] = { -0.5f, -0.5f, 0.0f,
-							0.0f, -0.5f, 0.0f,
-							-0.25f, 0.0f, 0.0f };
+							0.5f, -0.5f, 0.0f,
+							0.0f, 0.5f, 0.0f };
 	GLfloat colors[] = { 1.0f, 0.0f, 0.0f, 1.0f,
-						 0.0f, 1.0f, 0.0f, 1.0f,
-						 0.0f, 0.0f, 1.0f, 1.0f };
-
-	GLfloat triangle2_vertex [] = {  0.0f, -0.5f, 0.0f,
-								 	 0.5f, -0.5f, 0.0f,
-									0.25f, 0.0f, 0.0f };
-
-	GLfloat triangle2_colors[] = { 0.0f, 1.0f, 0.0f, 1.0f,
-								   0.0f, 1.0f, 0.0f, 1.0f,
-								   0.0f, 1.0f, 0.0f, 1.0f };
+						 1.0f, 0.0f, 0.0f, 1.0f,
+						 1.0f, 0.0f, 0.0f, 1.0f };
 
 	// === SHADER INITIALIZATION ===
 	char *vertexShaderSourceCode = readFile("vertexShader.vsh"); // Loads the vertex shader source file
@@ -134,17 +126,12 @@ int main(int argc, char** argv) {
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	// Create the buffer, but don't load anything yet
-	glBufferData(GL_ARRAY_BUFFER, (7 * 3) * 2 * sizeof(GLfloat), NULL, GL_STATIC_DRAW); // 7 => one set of vertices (3 vertex + 4 color); 3 => number of vertices; Both forms a triangle
+	glBufferData(GL_ARRAY_BUFFER, (7 * 3) * sizeof(GLfloat), NULL, GL_STATIC_DRAW); // 7 => one set of vertices (3 vertex + 4 color); 3 => number of vertices; Both forms a triangle
 
 	// Load the vertex points
 	glBufferSubData(GL_ARRAY_BUFFER, 0, 3 * 3 * sizeof(GLfloat), vertices); // (type, starting address, length, the array)
 	// Load the colors
 	glBufferSubData(GL_ARRAY_BUFFER, 3 * 3 * sizeof(GLfloat), 3 * 4 * sizeof(GLfloat), colors); // (type, starting address, length, the array)
-
-	// Load the vertex points
-	glBufferSubData(GL_ARRAY_BUFFER, 7 * 3 * sizeof(GLfloat), 3 * 3 * sizeof(GLfloat), triangle2_vertex);
-	// Load the colors
-	glBufferSubData(GL_ARRAY_BUFFER, (7 * 3 + 3 * 3) * sizeof(GLfloat), 3 * 4 * sizeof(GLfloat), triangle2_colors);
 
 	// Find the position of the variables in the shader
 	positionID = glGetAttribLocation(shaderProgramID, "s_vPosition");
