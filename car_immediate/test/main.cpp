@@ -8,14 +8,19 @@ using namespace std;
 void changeViewPort(int w, int h);
 void renderDrawing();
 void drawCircle(float x, float y, float radius);
-void drawCity();
+void drawCity(float dx);
 void drawCar(GLfloat dx, GLfloat dy);
 void drawRoad();
+float getRandomFloat(float Lo, float HI);
 
 const string WINDOW_TITLE = "Task 1 - Draw car with immediate";
 const float DELTA = .003f;
 
 float position = -2.0f;
+float positionBuilding = 0.0f;
+float positionRoad = -2.0f;
+float buildingHeight[11];
+int hour = 0;
 
 int main(int argc, char** argv) {
 	
@@ -52,8 +57,8 @@ void renderDrawing() {
 	glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPointSize(10.0f);
-	printf("a\n");
-	drawCity();
+
+	drawCity(positionBuilding);
 	drawRoad();
 	drawCar(position, .0f);
 	glutSwapBuffers();
@@ -61,6 +66,7 @@ void renderDrawing() {
 	position += DELTA;
 	if (position > 3)
 		position = -2.f;
+	hour++;
 
 	glutPostRedisplay();
 }
@@ -77,91 +83,37 @@ void drawCircle(float x, float y, float radius) {
 	glEnd(); //END
 }
 
-void drawCity() {
+void drawCity(float dx) {
 	glColor3f(0.2f, 0.2f, 1.0f);
-	glBegin(GL_POLYGON);
-	glVertex2f(-1.0f, 0.5f);
-	glVertex2f(-0.8f, 0.5f);
-	glVertex2f(-0.8f, 0.0f);
-	glVertex2f(-1.0f, 0.0f);
-	glEnd();
+	float buildingWidth = 0.2;
+	
+	if (hour == 0) {
+		for (int i = 0; i < 11; i++) {
+			buildingHeight[i] = getRandomFloat(0.3f, 0.8f);
+		}
+	}
 
-	glBegin(GL_POLYGON);
-	glVertex2f(-0.8f, 0.6f);
-	glVertex2f(-0.6f, 0.64f);
-	glVertex2f(-0.6f, 0.0f);
-	glVertex2f(-0.8f, 0.0f);
-	glEnd();
+	int j = 0;
+	for (float i = -1.0f; i < 1.2f; i+=buildingWidth) {
+		glBegin(GL_POLYGON);
+		glVertex2f(positionBuilding+i, 0.0f);
+		glVertex2f(positionBuilding+i, buildingHeight[j]);
+		glVertex2f(positionBuilding+i+buildingWidth, buildingHeight[j]);
+		glVertex2f(positionBuilding+i+buildingWidth, 0.0f);
+		glEnd();
+		j++;
+	}
 
-	glBegin(GL_POLYGON);
-	glVertex2f(-0.6f, 0.4f);
-	glVertex2f(-0.34f, 0.4f);
-	glVertex2f(-0.34f, 0.0f);
-	glVertex2f(-0.6f, 0.0f);
-	glEnd();
+	positionBuilding -= DELTA / 4;
 
-	glBegin(GL_POLYGON);
-	glVertex2f(-0.34f, 0.53f);
-	glVertex2f(-0.1f, 0.53f);
-	glVertex2f(-0.1f, 0.0f);
-	glVertex2f(-0.34f, 0.0f);
-	glEnd();
+	if (positionBuilding < -buildingWidth) {
+		for (int i = 0; i < 10; i++) {
+			buildingHeight[i] = buildingHeight[i+1];
+		}
+		buildingHeight[10] = getRandomFloat(0.3f, 0.8f);
+		positionBuilding = 0.0f;
+	}
 
-	glBegin(GL_POLYGON);
-	glVertex2f(-0.07f, 0.48f);
-	glVertex2f(-0.07f, 0.6f);
-	glVertex2f(-0.07f, 0.0f);
-	glVertex2f(-0.07f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(-0.1f, 0.6f);
-	glVertex2f(0.15f, 0.4f);
-	glVertex2f(0.15f, 0.0f);
-	glVertex2f(-0.1f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(0.15f, 0.8f);
-	glVertex2f(0.35f, 0.8f);
-	glVertex2f(0.35f, 0.0f);
-	glVertex2f(0.15f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(0.35f, 0.63f);
-	glVertex2f(0.43f, 0.63f);
-	glVertex2f(0.43f, 0.0f);
-	glVertex2f(0.35f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(0.43f, 0.48f);
-	glVertex2f(0.63f, 0.48f);
-	glVertex2f(0.63f, 0.0f);
-	glVertex2f(0.43f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(0.63f, 0.53f);
-	glVertex2f(0.75f, 0.53f);
-	glVertex2f(0.75f, 0.0f);
-	glVertex2f(0.63f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(0.75f, 0.67f);
-	glVertex2f(0.83f, 0.74f);
-	glVertex2f(0.83f, 0.0f);
-	glVertex2f(0.75f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(0.83f, 0.74f);
-	glVertex2f(1.0f, 0.5f);
-	glVertex2f(1.0f, 0.0f);
-	glVertex2f(0.83f, 0.0f);
-	glEnd();
 }
 
 void drawCar(GLfloat dx, GLfloat dy) {
@@ -246,6 +198,11 @@ void drawRoad() {
 	glVertex2f(0.95f, -0.45f);
 	glVertex2f(0.25f, -0.45f);
 	glEnd();
+}
+
+float getRandomFloat(float LO, float HI) {
+	float r = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+	return r;
 }
 
 // =========================================================================================
