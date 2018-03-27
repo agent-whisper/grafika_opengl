@@ -13,6 +13,9 @@ void drawCar(GLfloat dx, GLfloat dy);
 void drawRoad();
 
 const string WINDOW_TITLE = "Task 1 - Draw car with immediate";
+const float DELTA = .003f;
+
+float position = -2.0f;
 
 int main(int argc, char** argv) {
 	
@@ -49,10 +52,17 @@ void renderDrawing() {
 	glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPointSize(10.0f);
+	printf("a\n");
 	drawCity();
 	drawRoad();
-	drawCar(0.4f, -0.2f);
+	drawCar(position, .0f);
 	glutSwapBuffers();
+
+	position += DELTA;
+	if (position > 3)
+		position = -2.f;
+
+	glutPostRedisplay();
 }
 
 void drawCircle(float x, float y, float radius) {
