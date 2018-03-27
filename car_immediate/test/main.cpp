@@ -5,21 +5,46 @@
 
 using namespace std;
 
+void changeViewPort(int w, int h);
+void render();
+void renderDrawing();
+void DrawCircle(float x, float y, float radius);
+void draw_city();
+void draw_car(GLfloat dx, GLfloat dy);
+void draw_road();
+
 const string WINDOW_TITLE = "Task 1 - Draw car with immediate";
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+int main(int argc, char** argv) {
+	
+	// === GLUT INITIALIZATION ===
+	glutInit(&argc, argv); // Initializes GLUT
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); // Set up some memory buffers for our display
+	glutInitWindowSize(600, 600); // Set window size
+	glutCreateWindow(WINDOW_TITLE.data()); // Create the window with the title "Hello Fariz"
 
-GLuint shaderProgramID;
-GLuint vao = 0;
-GLuint vbo;
-GLuint positionID, colorID;
+	// Bind the window functions to the actual window
+	glutReshapeFunc(changeViewPort);
+	glutDisplayFunc(renderDrawing);
+
+	// Needed to call OpenGL functions
+	GLenum err = glewInit();
+	if (GLEW_OK != err) {
+		fprintf(stderr, "GLEW Error");
+		return 1;
+	}
+
+	// === MAIN LOOP START ===
+	glutMainLoop();
+	return 0;
+}
 
 // =========================================================================================
 
-// Window Functions
+// Window Functions: Function for resizing window. Put in "glutReshapeFunc"
 void changeViewPort(int w, int h) {
 	glViewport(0, 0, w, h);
-} // Function for resizing window. Put in "glutReshapeFunc"
+}
 
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -27,9 +52,7 @@ void render() {
 	glutSwapBuffers();
 }
 
-// reference : https://stackoverflow.com/questions/22444450/drawing-circle-with-opengl
-void DrawCircle(float x, float y, float radius)
-{
+void DrawCircle(float x, float y, float radius) {
 	double twicePi = 2.0 * 3.142;
 	glBegin(GL_TRIANGLE_FAN); //BEGIN CIRCLE
 	glVertex2f(x, y); // center of circle
@@ -130,52 +153,52 @@ void draw_city() {
 
 void draw_car(GLfloat dx, GLfloat dy) {
 	//glTranslatef(dx, dy, 0.0f);//move forward 4 units
-	
+
 	// car body
 	glColor3f(1.0f, 0.0f, 0.0f); //red fill color
 	glBegin(GL_POLYGON);
-		glVertex3f(dx + -1.0f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + -0.85f, dy + 0.35f, 0.0f);
-		glVertex3f(dx + -0.15f, dy + 0.35f, 0.0f);
-		glVertex3f(dx + 0.0f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + 0.2f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + 0.3f, dy + 0.0f, 0.0f);
-		glVertex3f(dx + 0.3f, dy + -0.2f, 0.0f);
-		glVertex3f(dx + -1.0f, dy + -0.2f, 0.0f);
+	glVertex3f(dx + -1.0f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.85f, dy + 0.35f, 0.0f);
+	glVertex3f(dx + -0.15f, dy + 0.35f, 0.0f);
+	glVertex3f(dx + 0.0f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + 0.2f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + 0.3f, dy + 0.0f, 0.0f);
+	glVertex3f(dx + 0.3f, dy + -0.2f, 0.0f);
+	glVertex3f(dx + -1.0f, dy + -0.2f, 0.0f);
 	glEnd();
 
 	//middle window
 	glColor3f(0.8f, 0.8f, 0.3f); //pale yellow fill color
 	glBegin(GL_POLYGON);
-		glVertex3f(dx + -0.74f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + -0.74f, dy + 0.3f, 0.0f);
-		glVertex3f(dx + -0.43f, dy + 0.3f, 0.0f);
-		glVertex3f(dx + -0.43f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.74f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.74f, dy + 0.3f, 0.0f);
+	glVertex3f(dx + -0.43f, dy + 0.3f, 0.0f);
+	glVertex3f(dx + -0.43f, dy + 0.1f, 0.0f);
 	glEnd();
 
 	// front window
 	glBegin(GL_POLYGON);
-		glVertex3f(dx + -0.4f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + -0.4f, dy + 0.3f, 0.0f);
-		glVertex3f(dx + -0.16f, dy + 0.3f, 0.0f);
-		glVertex3f(dx + -0.05f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.4f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.4f, dy + 0.3f, 0.0f);
+	glVertex3f(dx + -0.16f, dy + 0.3f, 0.0f);
+	glVertex3f(dx + -0.05f, dy + 0.1f, 0.0f);
 	glEnd();
 
 	// back window
 	glBegin(GL_POLYGON);
-		glVertex3f(dx + -0.77f, dy + 0.3f, 0.0f);
-		glVertex3f(dx + -0.77f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + -0.95f, dy + 0.1f, 0.0f);
-		glVertex3f(dx + -0.84f, dy + 0.3f, 0.0f);
+	glVertex3f(dx + -0.77f, dy + 0.3f, 0.0f);
+	glVertex3f(dx + -0.77f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.95f, dy + 0.1f, 0.0f);
+	glVertex3f(dx + -0.84f, dy + 0.3f, 0.0f);
 	glEnd();
 
 	// Headlight
 	glColor3f(0.8f, 0.8f, 1.0f); //pale yellow fill color
 	glBegin(GL_POLYGON);
-		glVertex3f(dx + 0.22f, dy + 0.083f, 0.0f);
-		glVertex3f(dx + 0.3f, dy + 0.009f, 0.0f);
-		glVertex3f(dx + 0.19f, dy + 0.03f, 0.0f);
-		glVertex3f(dx + 0.14f, dy + 0.085f, 0.0f);
+	glVertex3f(dx + 0.22f, dy + 0.083f, 0.0f);
+	glVertex3f(dx + 0.3f, dy + 0.009f, 0.0f);
+	glVertex3f(dx + 0.19f, dy + 0.03f, 0.0f);
+	glVertex3f(dx + 0.14f, dy + 0.085f, 0.0f);
 	glEnd();
 
 	// tires
@@ -212,7 +235,7 @@ void draw_road() {
 	glEnd();
 }
 
-void render2() {
+void renderDrawing() {
 	glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPointSize(10.0f);
@@ -222,27 +245,3 @@ void render2() {
 	glutSwapBuffers();
 }
 // =========================================================================================
-
-int main(int argc, char** argv) {
-	
-	// === GLUT INITIALIZATION ===
-	glutInit(&argc, argv); // Initializes GLUT
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); // Set up some memory buffers for our display
-	glutInitWindowSize(600, 600); // Set window size
-	glutCreateWindow(WINDOW_TITLE.data()); // Create the window with the title "Hello Fariz"
-
-	// Bind the window functions to the actual window
-	glutReshapeFunc(changeViewPort);
-	glutDisplayFunc(render2);
-
-	// Needed to call OpenGL functions
-	GLenum err = glewInit();
-	if (GLEW_OK != err) {
-		fprintf(stderr, "GLEW Error");
-		return 1;
-	}
-
-	// === MAIN LOOP START ===
-	glutMainLoop();
-	return 0;
-}
