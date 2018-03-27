@@ -10,16 +10,16 @@ void renderDrawing();
 void drawCircle(float x, float y, float radius);
 void drawCity(float dx);
 void drawCar(GLfloat dx, GLfloat dy);
-void drawRoad();
+void drawRoad(float dx);
 float getRandomFloat(float Lo, float HI);
 
 const string WINDOW_TITLE = "Task 1 - Draw car with immediate";
-const float DELTA = .003f;
+const float DELTA = .0003f;
 
 float position = -2.0f;
 float positionBuilding = 0.0f;
-float positionRoad = -2.0f;
 float buildingHeight[11];
+float buildingWidth = 0.2;
 int hour = 0;
 
 int main(int argc, char** argv) {
@@ -59,13 +59,13 @@ void renderDrawing() {
 	glPointSize(10.0f);
 
 	drawCity(positionBuilding);
-	drawRoad();
+	drawRoad(-position);
 	drawCar(position, .0f);
 	glutSwapBuffers();
 
 	position += DELTA;
-	if (position > 3)
-		position = -2.f;
+	if (position > 2)
+		position = -2.0f;
 	hour++;
 
 	glutPostRedisplay();
@@ -85,7 +85,6 @@ void drawCircle(float x, float y, float radius) {
 
 void drawCity(float dx) {
 	glColor3f(0.2f, 0.2f, 1.0f);
-	float buildingWidth = 0.2;
 	
 	if (hour == 0) {
 		for (int i = 0; i < 11; i++) {
@@ -104,7 +103,7 @@ void drawCity(float dx) {
 		j++;
 	}
 
-	positionBuilding -= DELTA / 4;
+	positionBuilding -= DELTA / 3;
 
 	if (positionBuilding < -buildingWidth) {
 		for (int i = 0; i < 10; i++) {
@@ -175,8 +174,9 @@ void drawCar(GLfloat dx, GLfloat dy) {
 	drawCircle(dx + 0.0f, dy + -0.2f, 0.08f);
 }
 
-void drawRoad() {
+void drawRoad(float dx) {
 	glColor3f(0.13f, 0.13f, 0.13f);
+
 	glBegin(GL_POLYGON);
 	glVertex2f(-1.0f, 0.0f);
 	glVertex2f(1.0f, 0.0f);
@@ -185,19 +185,33 @@ void drawRoad() {
 	glEnd();
 
 	glColor3f(1, 1, 1);
+
+	// panjang = 1.0 // tinggi = 0.1 // gradien = 0.05 // margin = 0.4
+	float base = dx - 4.0f;
+	for (float i = base; i < 1.0f; i += 1.0f) {
+		glBegin(GL_POLYGON);
+		glVertex2f(i, -0.35f);
+		glVertex2f(i + 0.6, -0.35f);
+		glVertex2f(i + 0.65f, -0.45f);
+		glVertex2f(i + 0.05f, -0.45f);
+		glEnd();
+	}
+
+	/*
 	glBegin(GL_POLYGON);
-	glVertex2f(-0.75f, -0.35f);
-	glVertex2f(-0.15f, -0.35f);
-	glVertex2f(-0.1f, -0.45f);
-	glVertex2f(-0.8f, -0.45f);
+	glVertex2f(dx-0.75f, -0.35f); 
+	glVertex2f(dx-0.15f, -0.35f);
+	glVertex2f(dx-0.1f, -0.45f);
+	glVertex2f(dx-0.7f, -0.45f);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	glVertex2f(0.3f, -0.35f);
-	glVertex2f(0.9f, -0.35f);
-	glVertex2f(0.95f, -0.45f);
-	glVertex2f(0.25f, -0.45f);
+	glVertex2f(dx+0.2f, -0.35f);
+	glVertex2f(dx+0.8f, -0.35f);
+	glVertex2f(dx+0.85f, -0.45f);
+	glVertex2f(dx+0.25f, -0.45f);
 	glEnd();
+	*/
 }
 
 float getRandomFloat(float LO, float HI) {
