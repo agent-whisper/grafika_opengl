@@ -6,12 +6,11 @@
 using namespace std;
 
 void changeViewPort(int w, int h);
-void render();
 void renderDrawing();
-void DrawCircle(float x, float y, float radius);
-void draw_city();
-void draw_car(GLfloat dx, GLfloat dy);
-void draw_road();
+void drawCircle(float x, float y, float radius);
+void drawCity();
+void drawCar(GLfloat dx, GLfloat dy);
+void drawRoad();
 
 const string WINDOW_TITLE = "Task 1 - Draw car with immediate";
 
@@ -46,13 +45,17 @@ void changeViewPort(int w, int h) {
 	glViewport(0, 0, w, h);
 }
 
-void render() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+void renderDrawing() {
+	glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glPointSize(10.0f);
+	drawCity();
+	drawRoad();
+	drawCar(0.4f, -0.2f);
 	glutSwapBuffers();
 }
 
-void DrawCircle(float x, float y, float radius) {
+void drawCircle(float x, float y, float radius) {
 	double twicePi = 2.0 * 3.142;
 	glBegin(GL_TRIANGLE_FAN); //BEGIN CIRCLE
 	glVertex2f(x, y); // center of circle
@@ -64,7 +67,7 @@ void DrawCircle(float x, float y, float radius) {
 	glEnd(); //END
 }
 
-void draw_city() {
+void drawCity() {
 	glColor3f(0.2f, 0.2f, 1.0f);
 	glBegin(GL_POLYGON);
 	glVertex2f(-1.0f, 0.5f);
@@ -151,7 +154,7 @@ void draw_city() {
 	glEnd();
 }
 
-void draw_car(GLfloat dx, GLfloat dy) {
+void drawCar(GLfloat dx, GLfloat dy) {
 	//glTranslatef(dx, dy, 0.0f);//move forward 4 units
 
 	// car body
@@ -203,14 +206,14 @@ void draw_car(GLfloat dx, GLfloat dy) {
 
 	// tires
 	glColor3f(0.0f, 0.0f, 0.0f);
-	DrawCircle(dx + -0.8f, dy + -0.2f, 0.14f);
-	DrawCircle(dx + 0.0f, dy + -0.2f, 0.14f);
+	drawCircle(dx + -0.8f, dy + -0.2f, 0.14f);
+	drawCircle(dx + 0.0f, dy + -0.2f, 0.14f);
 	glColor3f(0.2f, 0.2f, 0.2f);
-	DrawCircle(dx + -0.8f, dy + -0.2f, 0.08f);
-	DrawCircle(dx + 0.0f, dy + -0.2f, 0.08f);
+	drawCircle(dx + -0.8f, dy + -0.2f, 0.08f);
+	drawCircle(dx + 0.0f, dy + -0.2f, 0.08f);
 }
 
-void draw_road() {
+void drawRoad() {
 	glColor3f(0.13f, 0.13f, 0.13f);
 	glBegin(GL_POLYGON);
 	glVertex2f(-1.0f, 0.0f);
@@ -235,13 +238,4 @@ void draw_road() {
 	glEnd();
 }
 
-void renderDrawing() {
-	glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glPointSize(10.0f);
-	draw_city();
-	draw_road();
-	draw_car(0.4f, -0.2f);
-	glutSwapBuffers();
-}
 // =========================================================================================
