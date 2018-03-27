@@ -14,7 +14,7 @@ void drawRoad(float dx);
 float getRandomFloat(float Lo, float HI);
 
 const string WINDOW_TITLE = "Task 1 - Draw car with immediate";
-const float DELTA = .0003f;
+const float DELTA = .006f;
 
 float position = -2.0f;
 float positionBuilding = 0.0f;
@@ -197,21 +197,6 @@ void drawRoad(float dx) {
 		glEnd();
 	}
 
-	/*
-	glBegin(GL_POLYGON);
-	glVertex2f(dx-0.75f, -0.35f); 
-	glVertex2f(dx-0.15f, -0.35f);
-	glVertex2f(dx-0.1f, -0.45f);
-	glVertex2f(dx-0.7f, -0.45f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glVertex2f(dx+0.2f, -0.35f);
-	glVertex2f(dx+0.8f, -0.35f);
-	glVertex2f(dx+0.85f, -0.45f);
-	glVertex2f(dx+0.25f, -0.45f);
-	glEnd();
-	*/
 }
 
 float getRandomFloat(float LO, float HI) {
